@@ -1,0 +1,9 @@
+{
+  "name": "college-course-prerequisites",
+  "version": "0.0.1",
+  "description": "Developer interview project - College Course Prerequisites",
+  "devDependencies": {
+    "chai": "^3.5.0"
+  },
+  "license": "MIT"
+}
