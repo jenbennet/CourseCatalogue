@@ -11,6 +11,7 @@ function CourseDirectory(courseArray) {
   }
 }
 
+//class methods
 CourseDirectory.prototype.hasPrerequisite = function(item) {
     if ( Array.isArray(item) ) {
         return item[1] !== '';
@@ -64,7 +65,21 @@ CourseDirectory.prototype.createCourseHash = function() {
             this.courseHash[this.getCourse(splitItem)] = [];
         }
     }
-}
+};
+
+CourseDirectory.prototype.printOrderedCourses = function() {
+    var output = '';
+    var keys = Object.keys(this.courseHash);
+    output = keys.join(', ');
+    
+    for (let key of keys) {
+        if ( this.courseHash[key].length > 0 ) {
+            output = output + ', ' + this.courseHash[key].join(', ');
+        }
+    }
+    
+    console.log(output);
+};
 
 // export the class
 module.exports = CourseDirectory;

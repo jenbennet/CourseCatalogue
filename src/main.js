@@ -6,14 +6,9 @@ function printCourseList(err, array) {
         console.error(err);
     }
     else {
-        console.log('--- inputArray ---');
-        console.log(array);
-        
         var courseDirectory = new CourseDirectory(array);
         courseDirectory.createCourseHash();
-        
-        console.log('\n--- courseHash ---');
-        console.log(courseDirectory.courseHash);
+        courseDirectory.printOrderedCourses();
     }
 }
 
