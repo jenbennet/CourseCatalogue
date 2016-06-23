@@ -11,15 +11,6 @@ function CourseDirectory(courseArray) {
   }
 }
 
-CourseDirectory.prototype.addItem = function(prerequisite, courseArray) {
-    if ( (typeof(prerequisite) === 'string') && Array.isArray(courseArray) ) {
-        this.courseHash[prerequisite] = courseArray;
-        //console.log(this.courseHash);
-    } else {
-        throw new TypeError('Prerequisite must be a string and courseArray an Array');
-    }
-};
-
 CourseDirectory.prototype.hasPrerequisite = function(item) {
     if ( Array.isArray(item) ) {
         return item[1] !== '';
@@ -49,30 +40,28 @@ CourseDirectory.prototype.getPrerequisite = function(item) {
 
 CourseDirectory.prototype.createCourseHash = function() {    
     for (let item of this.courseArray) {
-        var splitItem = item.split(': ');
-//        console.log('\ncourselala');
-//        console.log(item);
-//        console.log(splitItem);
         
-        if ( this.hasPrerequisite(splitItem) ) {
-            console.log('lala');
-//            var prerequisite = this.getPrerequisite(splitItem);
-//            var course = this.getCourse(splitItem);
-//            
-//            for (var key in this.courseHash) {
-//                if ( this.courseHash.hasOwnProperty(key) ) {
-//                    this.courseHash[key].push(course);
-//                    break;
-//                }
-//                else {
-//                    this.courseHash[prerequisite] = [course];
-//                }
-//            }
+        if (item === '') {
+            continue;
         }
+        
+        var splitItem = item.split(': ');
+        
+        //if this is a Course: Prerequisite 
+        if ( this.hasPrerequisite(splitItem) ) {
+            var prerequisite = this.getPrerequisite(splitItem);
+            var course = this.getCourse(splitItem);
+            
+            if ( prerequisite in this.courseHash ) {
+                this.courseHash[prerequisite].push(course);
+            }
+            else {
+                this.courseHash[prerequisite] = [course];
+            }
+        }
+        //if this is a Course: 
         else {
-            //console.log('lolo');
             this.courseHash[this.getCourse(splitItem)] = [];
-            //this.addItem(splitItem);
         }
     }
 }

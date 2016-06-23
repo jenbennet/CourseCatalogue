@@ -34,10 +34,6 @@ describe('CourseDirectory', function() {
         
         describe('Fail path', function(){
             
-            it('Should fail to add empty item to CourseDirectory.courseHash', function() {
-                expect(function() { directory.addItem() }).to.throw(TypeError);
-            });
-            
             it('Should fail if CourseDirectory.hasPrerequisite() parameter is not an array', function() {
                 expect(function() { directory.hasPrerequisite() }).to.throw(TypeError);
             });
@@ -52,10 +48,6 @@ describe('CourseDirectory', function() {
         });
         
         describe('Pass path', function(){
-            
-            it('Should add items to CourseDirectory.courseHash', function() {
-                expect(function() { directory.addItem('Introduction to Fire', ['Advanced Pyrotechnics']) }).to.not.throw(Error);
-            });
             
             it('Should not have a prerequisite', function() {
                 var inputArray = ['Introduction to Fire', ''];
@@ -83,8 +75,7 @@ describe('CourseDirectory', function() {
             
             it('Should return the Prerequisite from an \'Course: Prerequisite\'  item', function(){
                 var inputArray = ['Advanced Pyrotechnics', 'Introduction to Fire'];
-                
-                expect(directory.getPrerequisite(inputArray)).to.be.equal('Introduction to Fire');
+                 expect(directory.getPrerequisite(inputArray)).to.be.equal('Introduction to Fire');
             });
             
         });
@@ -93,7 +84,13 @@ describe('CourseDirectory', function() {
     describe('Directory Parsing Functions', function() {
         
         describe('Fail path', function(){
-            
+            it('Should not add empty lines to CourseDirectory.courseHash', function() {
+                var inputArray = [''];
+                var directory = new CourseDirectory(inputArray);
+                
+                directory.createCourseHash();
+                expect(directory.courseHash).to.be.empty;
+            });
         });
         
         describe('Pass path', function(){
@@ -102,14 +99,16 @@ describe('CourseDirectory', function() {
                 var inputArray = ['Introduction to Fire: '];
                 var directory = new CourseDirectory(inputArray);
                 
-                var hash = new Object();
-                hash['Introduction to Fire'] = [];
+                directory.createCourseHash();
+                expect(directory.courseHash).to.have.property('Introduction to Fire').that.is.an('array').that.is.empty;
+            });
 
+            it('Should read the courseArray and parse the Prerequisite and Course into CourseDirectory.courseHash', function() {
+                var inputArray = ['Advanced Pyrotechnics: Introduction to Fire'];
+                var directory = new CourseDirectory(inputArray);
                 
-                expect(function() {
-                    directory.createCourseHash();
-                    //console.log('test ' + directory.courseHash['Introduction to Fire'].pop());
-                }).to.not.throw(Error);
+                directory.createCourseHash();
+                expect(directory.courseHash).to.have.property('Introduction to Fire').that.is.an('array').with.deep.property('[0]').that.equals('Advanced Pyrotechnics');
             });
             
         });
