@@ -4,7 +4,6 @@ var fs = require('fs');
     
 function splitFile(callback, err, fileData) {
     if (err) {
-        console.error('--- There was an error --- \n' + err + '\n');
         callback(err);
     }
     else {

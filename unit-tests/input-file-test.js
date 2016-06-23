@@ -30,6 +30,13 @@ describe('InputFile', function() {
                     expect(results).to.be.undefined;
                 });
             });
+            
+            it('InputFile() should raise an error', function(done) {
+                inputFile.readInputFile('', function(err, results){
+                    done();
+                    expect(err).not.to.be.undefined;
+                });
+            });
         });
         
         describe('Pass path', function(){
