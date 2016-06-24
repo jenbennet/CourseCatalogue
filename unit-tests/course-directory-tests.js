@@ -75,7 +75,7 @@ describe('CourseDirectory', function() {
             
             it('Should return the Prerequisite from an \'Course: Prerequisite\'  item', function(){
                 var inputArray = ['Advanced Pyrotechnics', 'Introduction to Fire'];
-                 expect(directory.getPrerequisite(inputArray)).to.be.equal('Introduction to Fire');
+                expect(directory.getPrerequisite(inputArray)).to.be.equal('Introduction to Fire');
             });
             
         });
