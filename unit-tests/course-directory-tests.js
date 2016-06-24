@@ -34,48 +34,84 @@ describe('CourseDirectory', function() {
         
         describe('Fail path', function(){
             
-            it('Should fail if CourseDirectory.hasPrerequisite() parameter is not an array', function() {
-                expect(function() { directory.hasPrerequisite() }).to.throw(TypeError);
+            it('Should fail if CourseDirectory.invalidItem() parameter is a string or undefined', 
+               function() {
+                expect(function() { directory.invalidItem() }).to.fail;
             });
             
-            it('Should fail if CourseDirectory.getCourse() parameter is not an array', function() {
+            it('Should fail if CourseDirectory.validPrequisite() parameter is not a string', 
+               function() {
+                expect(function() { directory.validPrequisite() }).to.throw(TypeError);
+            });
+            
+            it('Should fail if CourseDirectory.getCourse() parameter is not an array', 
+               function() {
                 expect(function() { directory.getCourse() }).to.throw(TypeError);
             });
             
-            it('Should fail if CourseDirectory.getPrerequisite() parameter is not an array', function() {
+            it('Should fail if CourseDirectory.getPrerequisite() parameter is not an array', 
+               function() {
                 expect(function() { directory.getPrerequisite() }).to.throw(TypeError);
+            });
+            
+            it('Should fail CourseDirectory.stringify() parameter is not an array', 
+               function() {
+                expect(function() { directory.stringify(5) }).to.throw(TypeError);
             });
         });
         
         describe('Pass path', function(){
             
-            it('Should not have a prerequisite', function() {
-                var inputArray = ['Introduction to Fire', ''];
-                
-                expect(directory.hasPrerequisite(inputArray)).to.be.false;
+            it('Should not be a valid item', function() {
+                expect(directory.invalidItem('')).to.be.true;
             });
             
-            it('Should have a prerequisite', function() {
-                var inputArray = ['Advanced Pyrotechnics', 'Introduction to Fire'];
-                
-                expect(directory.hasPrerequisite(inputArray)).to.be.true;
+            it('Should not be a valid item', function() {
+                expect(directory.invalidItem(undefined)).to.be.true;
             });
             
-            it('Should return the Course from an \'Course: Prerequisite\' item', function(){
+            it('Should not be a valid item', function() {
+                expect(directory.invalidItem('Introduction to Fire')).to.be.false;
+            });
+            
+            it('Should not be valid prerequisite', function() {
+                expect(directory.validPrequisite('')).to.be.false;
+            });
+            
+            it('Should be a valid prerequisite', function() {
+                expect(directory.validPrequisite('Introduction to Fire')).to.be.true;
+            });
+            
+            it('Should return the Course from an \'Course: Prerequisite\' item', 
+               function(){
                 var inputArray = ['Introduction to Fire', ''];
                 
                 expect(directory.getCourse(inputArray)).to.be.equal('Introduction to Fire');
             });
             
-            it('Should return the Course from an \'Course: \'  item', function(){
+            it('Should return the Course from an \'Course: \'  item', 
+               function(){
                 var inputArray = ['Advanced Pyrotechnics', 'Introduction to Fire'];
                 
                 expect(directory.getCourse(inputArray)).to.be.equal('Advanced Pyrotechnics');
             });
             
-            it('Should return the Prerequisite from an \'Course: Prerequisite\'  item', function(){
+            it('Should return the Prerequisite from an \'Course: Prerequisite\'  item', 
+               function(){
                 var inputArray = ['Advanced Pyrotechnics', 'Introduction to Fire'];
                 expect(directory.getPrerequisite(inputArray)).to.be.equal('Introduction to Fire');
+            });
+            
+            it('Should return an empty string from an empty array', 
+               function(){
+                expect(directory.stringify([])).to.be.equal('');
+            });
+            
+            it('Should return the comma separated string from an array', 
+               function(){
+                var inputArray = ['Introduction to Fire', 'Advanced Pyrotechnics'];
+                
+                expect(directory.stringify(inputArray)).to.be.equal('Introduction to Fire, Advanced Pyrotechnics');
             });
             
         });
@@ -84,8 +120,18 @@ describe('CourseDirectory', function() {
     describe('Directory Parsing Functions', function() {
         
         describe('Fail path', function(){
-            it('Should not add empty lines to CourseDirectory.courseHash', function() {
+            it('Should not add empty lines to CourseDirectory.courseHash', 
+               function() {
                 var inputArray = [''];
+                var directory = new CourseDirectory(inputArray);
+                
+                directory.createCourseHash();
+                expect(directory.courseHash).to.be.empty;
+            });
+            
+            it('Should not process undefined lines', 
+               function() {
+                var inputArray = [,];
                 var directory = new CourseDirectory(inputArray);
                 
                 directory.createCourseHash();
@@ -111,6 +157,21 @@ describe('CourseDirectory', function() {
                 expect(directory.courseHash).to.have.property('Introduction to Fire').that.is.an('array').with.deep.property('[0]').that.equals('Advanced Pyrotechnics');
             });
             
+            it('Should parse the data correctly independently of the order of the array CourseDirectory.courseHash', function() {
+                var inputArray = ['History of Cubicle Siege Engines: Rubber Band Catapults 101', 'Advanced Office Warfare: History of Cubicle Siege Engines', 'Rubber Band Catapults 101: ']
+                var directory = new CourseDirectory(inputArray);
+                
+                directory.createCourseHash();
+                expect(directory.courseHash).to.have.property('Rubber Band Catapults 101').that.is.an('array').that.has.length(2);
+            });
+            
+            it('Should parse the data correctly independently of the order of the array CourseDirectory.courseHash', function() {
+                var inputArray = ['Advanced Office Warfare: History of Cubicle Siege Engines', 'History of Cubicle Siege Engines: Rubber Band Catapults 101', 'Rubber Band Catapults 101: ']
+                var directory = new CourseDirectory(inputArray);
+                
+                directory.createCourseHash();
+                expect(directory.courseHash).to.have.property('Rubber Band Catapults 101').that.is.an('array').that.has.length(2);
+            });
         });
     });
 });
