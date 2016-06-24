@@ -39,30 +39,68 @@ CourseDirectory.prototype.getPrerequisite = function(item) {
     }
 };
 
-CourseDirectory.prototype.createCourseHash = function() {    
-    for (let item of this.courseArray) {
+CourseDirectory.prototype.createCourseHash = function() { 
+    var tempArray = [];
+    
+    for ( let item of this.courseArray ) {
         
-        if (item === '') {
+        if ( item === '' ) {
             continue;
         }
         
         var splitItem = item.split(': ');
         
-        //if this is a Course: Prerequisite 
-        if ( this.hasPrerequisite(splitItem) ) {
-            var prerequisite = this.getPrerequisite(splitItem);
-            var course = this.getCourse(splitItem);
+        var prerequisite = this.getPrerequisite(splitItem);
+        var course = this.getCourse(splitItem);
+        
+        //this is a Course: Prerequisite 
+        if ( prerequisite !== '' ) {
             
+            //the prerequisite exists in the hash
             if ( prerequisite in this.courseHash ) {
                 this.courseHash[prerequisite].push(course);
+                tempArray.push(course);
             }
+            
+            //the curse exists as prerequist and needs to be moved to a new prerequisite as a course
+            else if ( course in this.courseHash ){
+                this.courseHash[prerequisite] = [course];
+                this.courseHash[prerequisite] = this.courseHash[prerequisite].concat(this.courseHash[course]);
+                delete(this.courseHash[course]);
+                tempArray.push(course);
+            }
+            
+            //the course already exists as a course in the hash
+            else if ( tempArray.indexOf(prerequisite) >= 0) {
+                
+                for ( let key of Object.keys(this.courseHash) ) {
+                    
+                    if ( this.courseHash[key].indexOf(prerequisite) >= 0 ) {
+                        this.courseHash[key].push(course);
+                        tempArray.push(course);
+                        continue;
+                    }
+                }
+            }
+            
+            //the prerequisite and the course don't exist in the hash table
             else {
                 this.courseHash[prerequisite] = [course];
+                tempArray.push(course);
             }
         }
-        //if this is a Course: 
+        
+        //this is a Course:
         else {
-            this.courseHash[this.getCourse(splitItem)] = [];
+            //the prerequisite already exists in the table, do not override
+            if ( course in this.courseHash ) {
+                continue;
+            }
+        
+             
+            else {
+                this.courseHash[course] = [];
+            }
         }
     }
 };
