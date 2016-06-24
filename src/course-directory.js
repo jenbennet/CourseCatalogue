@@ -35,6 +35,10 @@ CourseDirectory.prototype.invalidItem = function(item) {
     return item === '' || typeof item === 'undefined';
 };
 
+CourseDirectory.prototype.inArray = function(array, value) {
+    return array.indexOf(value) >=0;
+}
+
 CourseDirectory.prototype.validPrequisite = function(item) {
     if (typeof item === 'string') {
         return item !== '';
@@ -65,9 +69,9 @@ CourseDirectory.prototype.addCourse = function(prerequisite, course, array) {
     }
 
     //the course already exists as a course in the hash
-    else if ( array.indexOf(prerequisite) >= 0) {
+    else if ( this.inArray(array, prerequisite) ) {
         for ( let key of Object.keys(this.courseHash) ) {
-            if ( this.courseHash[key].indexOf(prerequisite) >= 0 ) {
+            if ( this.inArray(this.courseHash[key], prerequisite) ) {
                 this.courseHash[key].push(course);
                 break;
             }
@@ -116,6 +120,11 @@ CourseDirectory.prototype.printOrderedCourses = function() {
     output += this.stringify(keys); 
     
     for (let key of keys) {
+        if( this.inArray(this.courseHash[key], key) ){
+            console.log('Invalid Input - Circular Reference');
+            return;
+        }
+        
         output += ', ' + this.stringify(this.courseHash[key]);
     }
     

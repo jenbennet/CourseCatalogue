@@ -54,10 +54,16 @@ describe('CourseDirectory', function() {
                 expect(function() { directory.getPrerequisite() }).to.throw(TypeError);
             });
             
-            it('Should fail CourseDirectory.stringify() parameter is not an array', 
+            it('Should fail if CourseDirectory.stringify() parameter is not an array', 
                function() {
                 expect(function() { directory.stringify(5) }).to.throw(TypeError);
             });
+            
+            it('Should fail if CourseDirectory.inArray() parameter is not an array and a value', 
+               function() {
+                expect(function() { directory.inArray() }).to.throw(TypeError);
+            });
+            
         });
         
         describe('Pass path', function(){
@@ -112,6 +118,18 @@ describe('CourseDirectory', function() {
                 var inputArray = ['Introduction to Fire', 'Advanced Pyrotechnics'];
                 
                 expect(directory.stringify(inputArray)).to.be.equal('Introduction to Fire, Advanced Pyrotechnics');
+            });
+            
+            it('Should find Value in Array', function() {
+                var inputArray = ['Introduction to Fire', 'Advanced Pyrotechnics'];
+                
+                expect(directory.inArray(inputArray, 'Introduction to Fire')).to.be.true;
+            });
+            
+            it('Should find Value in Array', function() {
+                var inputArray = ['Introduction to Fire', 'Advanced Pyrotechnics'];
+                
+                expect(directory.inArray(inputArray, 'Rubber Band Catapults 101')).to.be.false;
             });
             
         });
