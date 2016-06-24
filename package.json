@@ -2,8 +2,15 @@
   "name": "college-course-prerequisites",
   "version": "0.0.1",
   "description": "Developer interview project - College Course Prerequisites",
+  "scripts": {
+    "test": "mocha",
+    "start": "main.js",
+    "predeploy": "echo im about to deploy",
+    "postdeploy": "echo ive deployed",
+  },
   "devDependencies": {
-    "chai": "^3.5.0"
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
   },
   "license": "MIT"
 }
